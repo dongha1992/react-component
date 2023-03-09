@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import {
   fetchPokemon,
-  PokemonInfoFallback,
   PokemonForm,
   PokemonDataView,
+  PokemonInfoFallback,
 } from "./util/pokemon";
 import "./index.css";
+import { ErrorBoundary } from "react-error-boundary";
 
 function PokemonInfo({ pokemonName }: { pokemonName: string }) {
   const [state, setState] = useState<any>({
@@ -31,9 +32,7 @@ function PokemonInfo({ pokemonName }: { pokemonName: string }) {
     );
   }, [pokemonName]);
 
-  if (error) {
-    return <div>error</div>;
-  } else if (status === "idle") {
+  if (status === "idle") {
     return <div>"Submit a pokemon"</div>;
   } else if (status === "pending") {
     return <PokemonInfoFallback name={pokemonName} />;
@@ -42,6 +41,7 @@ function PokemonInfo({ pokemonName }: { pokemonName: string }) {
   } else if (status === "resolved") {
     return <PokemonDataView pokemon={pokemon} />;
   }
+  // 에러 바운더리에서 에러 캐치
   throw new Error("This should be impossible");
 }
 
@@ -52,12 +52,22 @@ function Pokemon() {
     setPokemonName(newPokemonName);
   }
 
+  const handleReset = () => {
+    setPokemonName("");
+  };
+
   return (
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <PokemonInfo pokemonName={pokemonName} />
+        <ErrorBoundary
+          fallbackRender={ErrorFallback}
+          onReset={handleReset}
+          resetKeys={[pokemonName]}
+        >
+          <PokemonInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
       </div>
     </div>
   );

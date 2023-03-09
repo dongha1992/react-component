@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { useQuery } from "react-query";
-import { getUserInfoApi, getProductsApi } from "../api/apiClient";
+import { getProductsApi } from "../api/apiClient";
 
 function useUser() {
   return useQuery(

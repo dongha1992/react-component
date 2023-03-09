@@ -8,6 +8,7 @@ import SuspenseTest from "./Suspense";
 import Login from "./Auth";
 import VanillaTiltComponent from "./Animation";
 import Pokemon from "./Async";
+import Counter from "./AdvancedHook";
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
       {/* <RenderPropsAndCompound /> */}
       {/* <SuspenseTest /> */}
       {/* <VanillaTiltComponent /> */}
-      <Pokemon />
+      {/* <Pokemon /> */}
+      <Counter />
     </div>
   );
 }
