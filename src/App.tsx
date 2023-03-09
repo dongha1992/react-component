@@ -19,8 +19,8 @@ function App() {
       {/* <RenderPropsAndCompound /> */}
       {/* <SuspenseTest /> */}
       {/* <VanillaTiltComponent /> */}
-      {/* <Pokemon /> */}
-      <Counter />
+      <Pokemon />
+      {/* <Counter /> */}
     </div>
   );
 }

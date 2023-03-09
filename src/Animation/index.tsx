@@ -1,4 +1,3 @@
-import { ConstructionOutlined } from "@mui/icons-material";
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import VanillaTilt from "vanilla-tilt";

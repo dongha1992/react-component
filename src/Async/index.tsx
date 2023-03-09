@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Reducer, useEffect, useReducer, useState } from "react";
 import {
   fetchPokemon,
   PokemonForm,
@@ -8,41 +8,105 @@ import {
 import "./index.css";
 import { ErrorBoundary } from "react-error-boundary";
 
-function PokemonInfo({ pokemonName }: { pokemonName: string }) {
-  const [state, setState] = useState<any>({
-    status: pokemonName ? "pending" : "idle",
-    pokemon: null,
-    error: null,
-  });
+type AsyncState<T> = {
+  status: "idle" | "pending" | "resolved" | "rejected";
+  data: T | null;
+  error: Error | null;
+};
 
-  const { status, pokemon, error } = state;
+type AsyncCallback<T> = () => Promise<T>;
+
+type AsyncAction<T> =
+  | { type: "pending" }
+  | { type: "resolved"; data: T }
+  | { type: "rejected"; error: Error }
+  | { type: undefined };
+
+function asyncReducer<T>(
+  state: AsyncState<T>,
+  action: AsyncAction<T>
+): AsyncState<T> {
+  switch (action.type) {
+    case "pending": {
+      return { status: "pending", data: null, error: null };
+    }
+    case "resolved": {
+      return { status: "resolved", data: action.data, error: null };
+    }
+    case "rejected": {
+      return { status: "rejected", data: null, error: action.error };
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+}
+
+function useAsync<T>(
+  asyncCallback: AsyncCallback<T>,
+  initialState: Partial<AsyncState<T>> = {},
+  dependencies: React.DependencyList = []
+): AsyncState<T> {
+  const [state, dispatch] = useReducer(
+    asyncReducer as Reducer<
+      AsyncState<T>,
+      { type: string; data?: T; error?: Error }
+    >,
+    {
+      status: "idle",
+      data: null,
+      error: null,
+      ...initialState,
+    }
+  );
 
   useEffect(() => {
-    if (!pokemonName) {
+    const promise = asyncCallback();
+    if (!promise) {
       return;
     }
-    setState({ status: "pending" });
-    fetchPokemon(pokemonName).then(
-      (pokemon) => {
-        setState({ status: "resolved", pokemon });
+    dispatch({ type: "pending" });
+    promise.then(
+      (data) => {
+        dispatch({ type: "resolved", data });
       },
       (error) => {
-        setState({ status: "rejected", error });
+        dispatch({ type: "rejected", error });
       }
     );
-  }, [pokemonName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, dependencies);
 
-  if (status === "idle") {
-    return <div>"Submit a pokemon"</div>;
-  } else if (status === "pending") {
-    return <PokemonInfoFallback name={pokemonName} />;
-  } else if (status === "rejected") {
-    throw error;
-  } else if (status === "resolved") {
-    return <PokemonDataView pokemon={pokemon} />;
+  return state;
+}
+
+function PokemonInfo({ pokemonName }: { pokemonName: string }) {
+  const state = useAsync(
+    (): any => {
+      if (!pokemonName) {
+        return null;
+      }
+      return fetchPokemon(pokemonName);
+    },
+    { status: pokemonName ? "pending" : "idle" },
+    [pokemonName]
+  );
+
+  const { data: pokemon, status, error } = state;
+
+  switch (status) {
+    case "idle":
+      return <span>Submit a pokemon</span>;
+    case "pending":
+      return <PokemonInfoFallback name={pokemonName} />;
+    case "rejected":
+      throw error;
+    case "resolved":
+      return <PokemonDataView pokemon={pokemon} />;
+    default:
+      // 에러 바운드에서 에러 캐치
+      throw new Error("This should be impossible");
   }
-  // 에러 바운더리에서 에러 캐치
-  throw new Error("This should be impossible");
 }
 
 function Pokemon() {
@@ -75,7 +139,13 @@ function Pokemon() {
 
 export default Pokemon;
 
-function ErrorFallback({ error, resetErrorBoundary }: any) {
+function ErrorFallback({
+  error,
+  resetErrorBoundary,
+}: {
+  error: Error;
+  resetErrorBoundary: () => void;
+}) {
   return (
     <div role="alert">
       There was an error:{" "}
