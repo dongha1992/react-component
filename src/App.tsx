@@ -19,7 +19,6 @@ import Login from "./Auth";
 //   );
 // }
 
-import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AppBar, Box, Toolbar } from "@mui/material";
 import UserProfile from "./Auth/component/UserProfile";
