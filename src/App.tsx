@@ -9,6 +9,7 @@ import Login from "./Auth";
 import VanillaTiltComponent from "./Animation";
 import Pokemon from "./Async";
 import Counter from "./AdvancedHook";
+import ContextComponent from "./AdvancedHook/aboutContext";
 
 function App() {
   return (
@@ -19,8 +20,9 @@ function App() {
       {/* <RenderPropsAndCompound /> */}
       {/* <SuspenseTest /> */}
       {/* <VanillaTiltComponent /> */}
-      <Pokemon />
+      {/* <Pokemon /> */}
       {/* <Counter /> */}
+      <ContextComponent />
     </div>
   );
 }
