@@ -1,4 +1,12 @@
-import { Reducer, useEffect, useReducer, useState } from "react";
+import React, {
+  Reducer,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import {
   fetchPokemon,
   PokemonForm,
@@ -42,12 +50,28 @@ function asyncReducer<T>(
   }
 }
 
-function useAsync<T>(
-  asyncCallback: AsyncCallback<T>,
-  initialState: Partial<AsyncState<T>> = {},
-  dependencies: React.DependencyList = []
-): AsyncState<T> {
-  const [state, dispatch] = useReducer(
+function useSafeDispatch(dispatch: any) {
+  const mountedRef = useRef(false);
+
+  useLayoutEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  return useCallback(
+    (action: any) => {
+      if (mountedRef.current) {
+        dispatch({ ...action });
+      }
+    },
+    [dispatch]
+  );
+}
+
+function useAsync<T>(initialState: Partial<AsyncState<T>> = {}) {
+  const [state, unSafeDispatch] = useReducer(
     asyncReducer as Reducer<
       AsyncState<T>,
       { type: string; data?: T; error?: Error }
@@ -60,39 +84,91 @@ function useAsync<T>(
     }
   );
 
-  useEffect(() => {
-    const promise = asyncCallback();
-    if (!promise) {
-      return;
-    }
+  const dispatch = useSafeDispatch(unSafeDispatch);
+
+  const run = useCallback((promise) => {
     dispatch({ type: "pending" });
     promise.then(
-      (data) => {
+      (data: any) => {
         dispatch({ type: "resolved", data });
       },
-      (error) => {
+      (error: any) => {
         dispatch({ type: "rejected", error });
       }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies);
+  }, []);
 
-  return state;
+  return { ...state, run };
+
+  //  // /**** START : useCallback과 API fetch  ****/
+
+  // useEffect(() => {
+  //   const promise = asyncCallback();
+  //   if (!promise) {
+  //     return;
+  //   }
+  //   dispatch({ type: "pending" });
+  //   promise.then(
+  //     (data) => {
+  //       dispatch({ type: "resolved", data });
+  //     },
+  //     (error) => {
+  //       dispatch({ type: "rejected", error });
+  //     }
+  //   );
+  //   // 1. asyncCallback이 디펜더시에 추가되어야 하는데 그렇게 되면 무한루프에 빠진다.
+  // }, [asyncCallback]);
+
+  // /**** END : useCallback과 API fetch  ****/
+
+  // return state
 }
 
 function PokemonInfo({ pokemonName }: { pokemonName: string }) {
-  const state = useAsync(
-    (): any => {
-      if (!pokemonName) {
-        return null;
-      }
-      return fetchPokemon(pokemonName);
-    },
-    { status: pokemonName ? "pending" : "idle" },
-    [pokemonName]
-  );
+  // /**** START : useCallback과 API fetch  ****/
 
-  const { data: pokemon, status, error } = state;
+  // const asyncCallback = useCallback((): any => {
+  //   //2. asyncCallback이 pokemonName가 바뀌었을 때만 동작하도록 만들어줘야 한다.
+  //   if (!pokemonName) {
+  //     return null;
+  //   }
+  //   return fetchPokemon(pokemonName);
+  // }, [pokemonName]);
+
+  // const state = useAsync(
+  //   /* 아래 함수를 위의 asyncCallback 로 변경*/
+
+  //   // (): any => {
+  //   //   if (!pokemonName) {
+  //   //     return null;
+  //   //   }
+  //   //   return fetchPokemon(pokemonName);
+  //   // },
+  //   asyncCallback,
+  //   { status: pokemonName ? "pending" : "idle" }
+  // );
+
+  // /* 3. 근데 api fetch useCallback 쓰는 건 좋지 않은 일(?) */
+
+  // /**** END : useCallback과 API fetch  ****/
+
+  /**** START : run function으로 대체  ****/
+
+  const {
+    data: pokemon,
+    status,
+    error,
+    run,
+  } = useAsync({
+    status: pokemonName ? "pending" : "idle",
+  });
+
+  useEffect(() => {
+    if (!pokemonName) return;
+    return run(fetchPokemon(pokemonName));
+  }, [pokemonName, run]);
+
+  /**** END : run function으로 대체  ****/
 
   switch (status) {
     case "idle":

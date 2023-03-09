@@ -117,14 +117,16 @@ body[class*="6"] > iframe {
 }
 
 .pokemon-info-app button.invisible-button {
-  border: none;
-  padding: inherit;
+  padding: 6px;
   font-size: inherit;
   font-family: inherit;
   cursor: pointer;
-  font-weight: inherit;
+  font-weight: 900;
   background-color: transparent;
   color: #000;
+  border: 1px solid black;
+  margin-right: 10px;
+  margin-top: 30px;
 }
 .pokemon-info-app button.invisible-button:hover,
 .pokemon-info-app button.invisible-button:active,

@@ -151,23 +151,21 @@ function PokemonForm({
           type="button"
           onClick={() => handleSelect("pikachu")}
         >
-          "pikachu"
+          피카츄
         </button>
-        {", "}
         <button
           className="invisible-button"
           type="button"
           onClick={() => handleSelect("charizard")}
         >
-          "charizard"
+          리자드
         </button>
-        {", or "}
         <button
           className="invisible-button"
           type="button"
           onClick={() => handleSelect("mew")}
         >
-          "mew"
+          뮤
         </button>
       </small>
       <div>
@@ -208,3 +206,20 @@ export {
   fetchPokemon,
   PokemonErrorBoundary,
 };
+
+function asyncReducer(state, action) {
+  switch (action.type) {
+    case "pending": {
+      return { status: "pending", data: null, error: null };
+    }
+    case "resolved": {
+      return { status: "resolved", data: action.data, error: null };
+    }
+    case "rejected": {
+      return { status: "rejected", data: null, error: action.error };
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+}
