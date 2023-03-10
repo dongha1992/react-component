@@ -11,6 +11,7 @@ import Pokemon from "./Async";
 import Counter from "./AdvancedHook";
 import ContextComponent from "./AdvancedHook/aboutContext";
 import Cache from "./Cache";
+import AboutLayoutEffect from "./AdvancedHook/aboutLayoutEffect";
 
 function App() {
   return (
@@ -24,7 +25,8 @@ function App() {
       {/* <Pokemon /> */}
       {/* <Counter /> */}
       {/* <ContextComponent /> */}
-      <Cache />
+      {/* <Cache /> */}
+      <AboutLayoutEffect />
     </div>
   );
 }
