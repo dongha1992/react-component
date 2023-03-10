@@ -1,4 +1,4 @@
-import React, {
+import {
   Reducer,
   useCallback,
   useEffect,
@@ -13,116 +13,9 @@ import {
   PokemonDataView,
   PokemonInfoFallback,
 } from "./util/pokemon";
+import { useAsync } from "../hooks/useAsync";
 import "./index.css";
 import { ErrorBoundary } from "react-error-boundary";
-
-type AsyncState<T> = {
-  status: "idle" | "pending" | "resolved" | "rejected";
-  data: T | null;
-  error: Error | null;
-};
-
-type AsyncCallback<T> = () => Promise<T>;
-
-type AsyncAction<T> =
-  | { type: "pending" }
-  | { type: "resolved"; data: T }
-  | { type: "rejected"; error: Error }
-  | { type: undefined };
-
-function asyncReducer<T>(
-  state: AsyncState<T>,
-  action: AsyncAction<T>
-): AsyncState<T> {
-  switch (action.type) {
-    case "pending": {
-      return { status: "pending", data: null, error: null };
-    }
-    case "resolved": {
-      return { status: "resolved", data: action.data, error: null };
-    }
-    case "rejected": {
-      return { status: "rejected", data: null, error: action.error };
-    }
-    default: {
-      throw new Error(`Unhandled action type: ${action.type}`);
-    }
-  }
-}
-
-function useSafeDispatch(dispatch: any) {
-  const mountedRef = useRef(false);
-
-  useLayoutEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
-
-  return useCallback(
-    (action: any) => {
-      if (mountedRef.current) {
-        dispatch({ ...action });
-      }
-    },
-    [dispatch]
-  );
-}
-
-function useAsync<T>(initialState: Partial<AsyncState<T>> = {}) {
-  const [state, unSafeDispatch] = useReducer(
-    asyncReducer as Reducer<
-      AsyncState<T>,
-      { type: string; data?: T; error?: Error }
-    >,
-    {
-      status: "idle",
-      data: null,
-      error: null,
-      ...initialState,
-    }
-  );
-
-  const dispatch = useSafeDispatch(unSafeDispatch);
-
-  const run = useCallback((promise) => {
-    dispatch({ type: "pending" });
-    promise.then(
-      (data: any) => {
-        dispatch({ type: "resolved", data });
-      },
-      (error: any) => {
-        dispatch({ type: "rejected", error });
-      }
-    );
-  }, []);
-
-  return { ...state, run };
-
-  //  // /**** START : useCallback과 API fetch  ****/
-
-  // useEffect(() => {
-  //   const promise = asyncCallback();
-  //   if (!promise) {
-  //     return;
-  //   }
-  //   dispatch({ type: "pending" });
-  //   promise.then(
-  //     (data) => {
-  //       dispatch({ type: "resolved", data });
-  //     },
-  //     (error) => {
-  //       dispatch({ type: "rejected", error });
-  //     }
-  //   );
-  //   // 1. asyncCallback이 디펜더시에 추가되어야 하는데 그렇게 되면 무한루프에 빠진다.
-  // }, [asyncCallback]);
-
-  // /**** END : useCallback과 API fetch  ****/
-
-  // return state
-}
 
 function PokemonInfo({ pokemonName }: { pokemonName: string }) {
   // /**** START : useCallback과 API fetch  ****/

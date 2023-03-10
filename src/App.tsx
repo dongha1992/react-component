@@ -10,6 +10,7 @@ import VanillaTiltComponent from "./Animation";
 import Pokemon from "./Async";
 import Counter from "./AdvancedHook";
 import ContextComponent from "./AdvancedHook/aboutContext";
+import Cache from "./Cache";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
       {/* <VanillaTiltComponent /> */}
       {/* <Pokemon /> */}
       {/* <Counter /> */}
-      <ContextComponent />
+      {/* <ContextComponent /> */}
+      <Cache />
     </div>
   );
 }
