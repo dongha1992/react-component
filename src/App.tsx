@@ -13,6 +13,8 @@ import ContextComponent from "./AdvancedHook/aboutContext";
 import Cache from "./Cache";
 import AboutLayoutEffect from "./AdvancedHook/aboutLayoutEffect";
 import AboutImperative from "./AdvancedHook/aboutImperative";
+import AboutDebugValue from "./AdvancedHook/aboutDebugValue";
+import ContextModule from "./Pattern/ContextModule";
 
 function App() {
   return (
@@ -28,7 +30,9 @@ function App() {
       {/* <ContextComponent /> */}
       {/* <Cache /> */}
       {/* <AboutLayoutEffect /> */}
-      <AboutImperative />
+      {/* <AboutImperative /> */}
+      {/* <AboutDebugValue /> */}
+      <ContextModule />
     </div>
   );
 }
