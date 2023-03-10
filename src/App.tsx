@@ -12,6 +12,7 @@ import Counter from "./AdvancedHook";
 import ContextComponent from "./AdvancedHook/aboutContext";
 import Cache from "./Cache";
 import AboutLayoutEffect from "./AdvancedHook/aboutLayoutEffect";
+import AboutImperative from "./AdvancedHook/aboutImperative";
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
       {/* <Counter /> */}
       {/* <ContextComponent /> */}
       {/* <Cache /> */}
-      <AboutLayoutEffect />
+      {/* <AboutLayoutEffect /> */}
+      <AboutImperative />
     </div>
   );
 }
