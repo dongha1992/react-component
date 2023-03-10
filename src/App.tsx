@@ -15,6 +15,7 @@ import AboutLayoutEffect from "./AdvancedHook/aboutLayoutEffect";
 import AboutImperative from "./AdvancedHook/aboutImperative";
 import AboutDebugValue from "./AdvancedHook/aboutDebugValue";
 import ContextModule from "./Pattern/ContextModule";
+import CompoundPattern from "./Pattern/CompoundPattern";
 
 function App() {
   return (
@@ -32,7 +33,8 @@ function App() {
       {/* <AboutLayoutEffect /> */}
       {/* <AboutImperative /> */}
       {/* <AboutDebugValue /> */}
-      <ContextModule />
+      {/* <ContextModule /> */}
+      <CompoundPattern />
     </div>
   );
 }
