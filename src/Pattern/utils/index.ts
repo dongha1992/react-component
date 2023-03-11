@@ -8,4 +8,12 @@ async function updateUser(user: any, updates: any, signal?: any) {
   return { ...user, ...updates };
 }
 
-export { updateUser };
+type FunctionType = (...args: any[]) => void;
+
+function callAll(...fns: Array<FunctionType | undefined>) {
+  return (...args: any[]) => {
+    fns.forEach((fn) => fn && fn(...args));
+  };
+}
+
+export { updateUser, callAll };

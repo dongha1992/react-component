@@ -9,13 +9,16 @@ import Login from "./Auth";
 import VanillaTiltComponent from "./Animation";
 import Pokemon from "./Async";
 import Counter from "./AdvancedHook";
-import ContextComponent from "./AdvancedHook/aboutContext";
-import Cache from "./Cache";
-import AboutLayoutEffect from "./AdvancedHook/aboutLayoutEffect";
-import AboutImperative from "./AdvancedHook/aboutImperative";
-import AboutDebugValue from "./AdvancedHook/aboutDebugValue";
+// import ContextComponent from "./AdvancedHook/AboutContext";
+// import Cache from "./Cache";
+// import AboutLayoutEffect from "./AdvancedHook/AboutLayoutEffect";
+// import AboutImperative from "./AdvancedHook/AboutImperative";
+// import AboutDebugValue from "./AdvancedHook/AboutDebugValue";
 import ContextModule from "./Pattern/ContextModule";
 import CompoundPattern from "./Pattern/CompoundPattern";
+import PropsGetterSetter from "./Pattern/PropsGetterSetter";
+import StateReducer from "./Pattern/StateReducer";
+import ControlProps from "./Pattern/ControlProps";
 
 function App() {
   return (
@@ -34,7 +37,10 @@ function App() {
       {/* <AboutImperative /> */}
       {/* <AboutDebugValue /> */}
       {/* <ContextModule /> */}
-      <CompoundPattern />
+      {/* <CompoundPattern /> */}
+      {/* <PropsGetterSetter /> */}
+      {/* <StateReducer /> */}
+      <ControlProps />
     </div>
   );
 }

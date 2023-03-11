@@ -4,7 +4,7 @@ import "../style/index.css";
 const noop = () => {};
 
 interface SwitchProps {
-  on: boolean;
+  on?: boolean;
   onClick: () => void;
   "aria-label"?: string;
   className?: string;
