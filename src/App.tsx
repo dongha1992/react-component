@@ -21,6 +21,7 @@ import StateReducer from "./Pattern/StateReducer";
 import ControlProps from "./Pattern/ControlProps";
 import SuspenseEpic from "./Suspense/SuspenseEpic";
 import RenderAsYouFetch from "./Suspense/RenderAsYouFetch";
+import WithCache from "./Suspense/WithCache";
 
 function App() {
   return (
@@ -44,7 +45,8 @@ function App() {
       {/* <StateReducer /> */}
       {/* <ControlProps /> */}
       {/* <SuspenseEpic /> */}
-      <RenderAsYouFetch />
+      {/* <RenderAsYouFetch /> */}
+      <WithCache />
     </div>
   );
 }
