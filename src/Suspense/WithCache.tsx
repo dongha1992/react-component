@@ -50,8 +50,26 @@ function PokemonInfo({ pokemonResource }: any): any {
   );
 }
 
-function CacheProvider({ children }: { children: React.ReactElement }) {
+function CacheProvider({
+  children,
+  cacheTime,
+}: {
+  cacheTime: number;
+  children: React.ReactElement;
+}) {
   const cacheRef = useRef<{ [key: string]: Resource }>({});
+  const expirations = useRef<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      for (const [name, time] of Object.entries(expirations.current)) {
+        if (time < Date.now()) {
+          delete cacheRef.current[name];
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getResourceByCache = useCallback((name: string): Resource | null => {
     let resource: Resource | undefined = cacheRef.current[name];
@@ -59,6 +77,7 @@ function CacheProvider({ children }: { children: React.ReactElement }) {
       resource = createResource<PokemonData>(fetchPokemon(name));
       cacheRef.current[name] = resource as Resource;
     }
+    expirations.current[name] = Date.now() + cacheTime;
     return resource;
   }, []);
 
@@ -115,7 +134,7 @@ function WithCache() {
 
 function WithCacheProvider() {
   return (
-    <CacheProvider>
+    <CacheProvider cacheTime={5000}>
       <WithCache />
     </CacheProvider>
   );
