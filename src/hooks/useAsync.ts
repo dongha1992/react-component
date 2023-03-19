@@ -67,7 +67,7 @@ function useAsync<T>(initialState: Partial<AsyncState<T>> = {}) {
   const { data, error, status } = state;
 
   const run = useCallback(
-    (promise) => {
+    (promise: any) => {
       dispatch({ type: "pending" });
       promise.then(
         (data: any) => {
@@ -82,11 +82,11 @@ function useAsync<T>(initialState: Partial<AsyncState<T>> = {}) {
   );
 
   const setData = useCallback(
-    (data) => dispatch({ type: "resolved", data }),
+    (data: any) => dispatch({ type: "resolved", data }),
     [dispatch]
   );
   const setError = useCallback(
-    (error) => dispatch({ type: "rejected", error }),
+    (error: any) => dispatch({ type: "rejected", error }),
     [dispatch]
   );
 

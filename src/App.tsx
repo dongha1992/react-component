@@ -19,6 +19,8 @@ import CompoundPattern from "./Pattern/CompoundPattern";
 import PropsGetterSetter from "./Pattern/PropsGetterSetter";
 import StateReducer from "./Pattern/StateReducer";
 import ControlProps from "./Pattern/ControlProps";
+import SuspenseEpic from "./Suspense/SuspenseEpic";
+import RenderAsYouFetch from "./Suspense/RenderAsYouFetch";
 
 function App() {
   return (
@@ -40,7 +42,9 @@ function App() {
       {/* <CompoundPattern /> */}
       {/* <PropsGetterSetter /> */}
       {/* <StateReducer /> */}
-      <ControlProps />
+      {/* <ControlProps /> */}
+      {/* <SuspenseEpic /> */}
+      <RenderAsYouFetch />
     </div>
   );
 }

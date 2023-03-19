@@ -1,5 +1,13 @@
 import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { preloadImage } from "../../Suspense/util";
+// const homepage = process.env.NODE_ENV === "production" ? pkg.homepage : "/";
+const homepage = "https://react-suspense.netlify.app/";
+const fallbackImgUrl = `${homepage}img/pokemon/fallback-pokemon.jpg`;
+preloadImage(`${homepage}img/pokeball.png`);
+preloadImage(fallbackImgUrl);
+
+const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t));
 
 const formatDate = (date) =>
   `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")} ${String(
@@ -60,6 +68,10 @@ function fetchPokemon(name, delay = 1500) {
         return Promise.reject(error);
       }
     });
+}
+
+function getImageUrlForPokemon(pokemonName) {
+  return `${homepage}img/pokemon/${pokemonName.toLowerCase()}.jpg`;
 }
 
 function PokemonInfoFallback({ name }) {
@@ -199,14 +211,6 @@ function PokemonErrorBoundary(props) {
   return <ErrorBoundary FallbackComponent={ErrorFallback} {...props} />;
 }
 
-export {
-  PokemonInfoFallback,
-  PokemonForm,
-  PokemonDataView,
-  fetchPokemon,
-  PokemonErrorBoundary,
-};
-
 function asyncReducer(state, action) {
   switch (action.type) {
     case "pending": {
@@ -223,3 +227,13 @@ function asyncReducer(state, action) {
     }
   }
 }
+
+export {
+  PokemonInfoFallback,
+  PokemonForm,
+  PokemonDataView,
+  fetchPokemon,
+  PokemonErrorBoundary,
+  getImageUrlForPokemon,
+  asyncReducer,
+};
