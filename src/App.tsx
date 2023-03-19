@@ -22,6 +22,7 @@ import ControlProps from "./Pattern/ControlProps";
 import SuspenseEpic from "./Suspense/SuspenseEpic";
 import RenderAsYouFetch from "./Suspense/RenderAsYouFetch";
 import WithCache from "./Suspense/WithCache";
+import SuspenseImage from "./Suspense/SuspenseImage";
 
 function App() {
   return (
@@ -46,7 +47,8 @@ function App() {
       {/* <ControlProps /> */}
       {/* <SuspenseEpic /> */}
       {/* <RenderAsYouFetch /> */}
-      <WithCache />
+      {/* <WithCache /> */}
+      <SuspenseImage />
     </div>
   );
 }
