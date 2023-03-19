@@ -2,6 +2,8 @@ import * as React from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { preloadImage } from "../../Suspense/util";
 // const homepage = process.env.NODE_ENV === "production" ? pkg.homepage : "/";
+
+const BASE_URL = "https://graphql-pokemon2.vercel.app/";
 const homepage = "https://react-suspense.netlify.app/";
 const fallbackImgUrl = `${homepage}img/pokemon/fallback-pokemon.jpg`;
 preloadImage(`${homepage}img/pokeball.png`);
@@ -15,7 +17,7 @@ const formatDate = (date) =>
   ).padStart(2, "0")}.${String(date.getMilliseconds()).padStart(3, "0")}`;
 
 // the delay argument is for faking things out a bit
-function fetchPokemon(name, delay = 1500) {
+function fetchPokemon(name, delay = 1000) {
   const pokemonQuery = `
     query PokemonInfo($name: String) {
       pokemon(name: $name) {
@@ -33,15 +35,16 @@ function fetchPokemon(name, delay = 1500) {
       }
     }
   `;
+  console.log("%c POST ->", "color:green", BASE_URL);
 
   return window
-    .fetch("https://graphql-pokemon2.vercel.app/", {
+    .fetch(BASE_URL, {
       // learn more about this API here: https://wayfair.github.io/dociql/
       // test pokemon queries here: https://graphql-pokemon2.vercel.app/
       method: "POST",
       headers: {
         "content-type": "application/json;charset=UTF-8",
-        delay: delay,
+        delay,
       },
       body: JSON.stringify({
         query: pokemonQuery,
@@ -154,10 +157,15 @@ function PokemonForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="pokemon-form">
-      <label htmlFor="pokemonName-input">Pokemon Name</label>
+    <form
+      onSubmit={handleSubmit}
+      className="pokemon-form"
+      style={{ marginTop: "40px" }}
+    >
+      <label htmlFor="pokemonName-input" style={{ marginRight: "20px" }}>
+        이름을 눌러보세요.
+      </label>
       <small>
-        Try{" "}
         <button
           className="invisible-button"
           type="button"
@@ -180,17 +188,17 @@ function PokemonForm({
           뮤
         </button>
       </small>
-      <div>
+      <div style={{ margin: "30px" }}>
         <input
           className="pokemonName-input"
           id="pokemonName-input"
           name="pokemonName"
-          placeholder="Pokemon Name..."
+          placeholder="이름 입력"
           value={pokemonName}
           onChange={handleChange}
         />
         <button type="submit" disabled={!pokemonName.length}>
-          Submit
+          제출
         </button>
       </div>
     </form>

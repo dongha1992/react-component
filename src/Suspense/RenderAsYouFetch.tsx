@@ -1,13 +1,13 @@
-import * as React from "react";
+import { Suspense, useEffect, useState, useTransition } from "react";
 import {
   fetchPokemon,
   PokemonInfoFallback,
   PokemonForm,
   PokemonDataView,
-  PokemonErrorBoundary,
+  PokemonErrorBoundary as ErrorBoundary,
 } from "../Async/util/pokemon";
 import { createResource } from "./util";
-
+import "./index.css";
 interface PokemonData {
   name: string;
   sprites: {
@@ -27,21 +27,31 @@ function PokemonInfo({ pokemonResource }: any): any {
   );
 }
 
+function getResource(name: string): { read: () => PokemonData } {
+  return createResource(fetchPokemon(name));
+}
+
 function RenderAsYouFetch() {
-  const [pokemonName, setPokemonName] = React.useState<string>("");
-  const [pokemonResource, setPokemonResource] = React.useState<{
+  const [pokemonName, setPokemonName] = useState<string>("");
+  const [pokemonResource, setPokemonResource] = useState<{
     read: () => PokemonData;
   } | null>(null);
 
-  React.useEffect(() => {
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
     if (!pokemonName) {
       setPokemonResource(null);
       return;
     }
-    setPokemonResource(createResource(fetchPokemon(pokemonName)));
-  }, [pokemonName]);
+    startTransition(() => {
+      setPokemonResource(getResource(pokemonName));
+    });
+  }, [pokemonName, startTransition]);
 
-  function handleSubmit(newPokemonName: any) {
+  console.log(isPending, "useTransition의 isPending");
+
+  function handleSubmit(newPokemonName: string) {
     setPokemonName(newPokemonName);
   }
 
@@ -53,20 +63,17 @@ function RenderAsYouFetch() {
     <div className="pokemon-info-app">
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
-      <React.Suspense fallback={<PokemonInfoFallback name={pokemonName} />}>
-        <div className="pokemon-info">
-          {pokemonResource ? (
-            <PokemonErrorBoundary
-              onReset={handleReset}
-              resetKeys={[pokemonResource]}
-            >
+      <div className={`pokemon-info ${isPending ? `pokemon-loading` : ""}`}>
+        {pokemonResource ? (
+          <ErrorBoundary onReset={handleReset} resetKeys={[pokemonResource]}>
+            <Suspense fallback={<PokemonInfoFallback name={pokemonName} />}>
               <PokemonInfo pokemonResource={pokemonResource} />
-            </PokemonErrorBoundary>
-          ) : (
-            <span>"Submit a pokemon"</span>
-          )}
-        </div>
-      </React.Suspense>
+            </Suspense>
+          </ErrorBoundary>
+        ) : (
+          <span>이름을 입력해주세요</span>
+        )}
+      </div>
     </div>
   );
 }
