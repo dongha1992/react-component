@@ -10,6 +10,12 @@ import { ToastContainer } from "react-toastify";
 
 initializeMockAdapter();
 
+declare global {
+  interface Window {
+    useRealAPI: boolean;
+  }
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

@@ -18,39 +18,49 @@ import {
 import { createResource } from "./util";
 import "./index.css";
 
-interface PokemonData {
-  [key: string]: any;
+if (window) {
+  window.useRealAPI = true;
 }
 
-interface Resource {
-  read: () => PokemonData;
+interface Resource<T> {
+  read: () => T;
 }
 
-// ❗❗❗❗
-// 🦉 On this one, make sure that you UNCHECK the "Disable cache" checkbox
-// in your DevTools "Network Tab". We're relying on that cache for this
-// approach to work!
-// ❗❗❗❗
+interface ImageProps {
+  src: string;
+  alt: string;
+  [prop: string]: any;
+}
 
-// we need to make a place to store the resources outside of render so
-// 🐨 create "cache" object here.
+function preloadImage<T>(src: string): Promise<T> {
+  return new Promise<T>((resolve) => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.onload = () => resolve(src as T);
+  });
+}
 
-// 🐨 create an Img component that renders a regular <img /> and accepts a src
-// prop and forwards on any remaining props.
-// 🐨 The first thing you do in this component is check whether your
-// imgSrcResourceCache already has a resource for the given src prop. If it does
-// not, then you need to create one (💰 using createResource).
-// 🐨 Once you have the resource, then render the <img />.
-// 💰 Here's what rendering the <img /> should look like:
-// <img src={imgSrcResource.read()} {...props} />
+const imgSrcCache: { [key: string]: Resource<string> } = {};
 
-function PokemonInfo({ pokemonResource }: any): any {
+function Image({ src, alt, ...props }: ImageProps) {
+  let imgSrcResource: Resource<string> = imgSrcCache[src];
+  if (!imgSrcResource) {
+    imgSrcResource = createResource<string>(preloadImage<string>(src));
+    imgSrcCache[src] = imgSrcResource;
+  }
+  return <img src={imgSrcResource.read()} alt={alt} {...props} />;
+}
+
+function PokemonInfo({
+  pokemonResource,
+}: {
+  pokemonResource: Resource<any>;
+}): JSX.Element {
   const pokemon = pokemonResource.read();
   return (
     <div>
       <div className="pokemon-info__img-wrapper">
-        {/* 🐨 swap this img for your new Img component */}
-        <img src={pokemon.image} alt={pokemon.name} />
+        <Image src={pokemon.image} alt={pokemon.name} />
       </div>
       <PokemonDataView pokemon={pokemon} />
     </div>
@@ -63,9 +73,9 @@ function PokemonInfo({ pokemonResource }: any): any {
 //   busyMinDurationMs: 700,
 // };
 
-const pokemonResourceCache: { [key: string]: Resource } = {};
+const pokemonResourceCache: { [key: string]: Resource<string> } = {};
 
-function getPokemonResource(name: string): Resource {
+function getPokemonResource(name: string): Resource<string> {
   const lowerName = name.toLowerCase();
   let resource = pokemonResourceCache[lowerName];
   if (!resource) {
@@ -82,7 +92,8 @@ function createPokemonResource(pokemonName: string) {
 function App() {
   const [isPending, startTransition] = useTransition();
   const [pokemonName, setPokemonName] = useState<string>("");
-  const [pokemonResource, setPokemonResource] = useState<Resource | null>(null);
+  const [pokemonResource, setPokemonResource] =
+    useState<Resource<string> | null>(null);
 
   useEffect(() => {
     if (!pokemonName) {
@@ -114,7 +125,7 @@ function App() {
             </Suspense>
           </ErrorBoundary>
         ) : (
-          "Submit a pokemon"
+          "이름을 입력해주세요."
         )}
       </div>
     </div>

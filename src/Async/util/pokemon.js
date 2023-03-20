@@ -96,10 +96,7 @@ function PokemonInfoFallback({ name }) {
 
 function PokemonDataView({ pokemon }) {
   return (
-    <div>
-      <div className="pokemon-info__img-wrapper">
-        <img src={pokemon.image} alt={pokemon.name} />
-      </div>
+    <>
       <section>
         <h2>
           {pokemon.name}
@@ -119,7 +116,7 @@ function PokemonDataView({ pokemon }) {
         </ul>
       </section>
       <small className="pokemon-info__fetch-time">{pokemon.fetchedAt}</small>
-    </div>
+    </>
   );
 }
 
