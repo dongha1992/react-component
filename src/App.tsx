@@ -23,6 +23,7 @@ import SuspenseEpic from "./Suspense/SuspenseEpic";
 import RenderAsYouFetch from "./Suspense/RenderAsYouFetch";
 import WithCache from "./Suspense/WithCache";
 import SuspenseImage from "./Suspense/SuspenseImage";
+import WithSuspenseHook from "./Suspense/WithSuspenseHook";
 
 function App() {
   return (
@@ -48,7 +49,8 @@ function App() {
       {/* <SuspenseEpic /> */}
       {/* <RenderAsYouFetch /> */}
       {/* <WithCache /> */}
-      <SuspenseImage />
+      {/* <SuspenseImage /> */}
+      <WithSuspenseHook />
     </div>
   );
 }

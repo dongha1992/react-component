@@ -73,8 +73,8 @@ function fetchPokemon(name, delay = 1000) {
     });
 }
 
-function getImageUrlForPokemon(pokemonName) {
-  return `${homepage}img/pokemon/${pokemonName.toLowerCase()}.jpg`;
+function getImageUrlForPokemon(name) {
+  return `${homepage}img/pokemon/${name.toLowerCase()}.jpg`;
 }
 
 function PokemonInfoFallback({ name }) {

@@ -52,7 +52,7 @@ function createPokemonResource(pokemonName: string) {
   return { data, image };
 }
 
-function SuspenseImage() {
+function WithSuspenseHook() {
   const [isPending, startTransition] = useTransition();
   const [pokemonName, setPokemonName] = useState<string>("");
   const [pokemonResource, setPokemonResource] =
@@ -96,4 +96,4 @@ function SuspenseImage() {
   );
 }
 
-export default SuspenseImage;
+export default WithSuspenseHook;

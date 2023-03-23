@@ -1,6 +1,11 @@
 import { PokemonDataView } from "../../Async/util/pokemon";
+import { Data, Resource } from "../SuspenseImage";
 
-function PokemonInfo({ pokemonResource }: any) {
+function PokemonInfo({
+  pokemonResource,
+}: {
+  pokemonResource: Resource<Data>;
+}): JSX.Element {
   const pokemon = pokemonResource.data.read();
   return (
     <div>
@@ -11,5 +16,4 @@ function PokemonInfo({ pokemonResource }: any) {
     </div>
   );
 }
-
 export default PokemonInfo;
