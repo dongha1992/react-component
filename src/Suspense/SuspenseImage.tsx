@@ -15,6 +15,25 @@ const PokemonInfo = React.lazy(
   () => import("./lazy/pokemon-info-render-as-you-fetch")
 );
 
+function usePokemonResource(pokemonName: string) {
+  const [isPending, startTransition] = useTransition();
+  const [pokemonResource, setPokemonResource] =
+    useState<Resource<string> | null>(null);
+
+  useEffect(() => {
+    if (!pokemonName) {
+      setPokemonResource(null);
+      return;
+    }
+
+    startTransition(() => {
+      setPokemonResource(getPokemonResource(pokemonName));
+    });
+  }, [pokemonName, startTransition]);
+
+  return [pokemonResource, isPending];
+}
+
 export type Data = any;
 
 export interface Resource<T> {
@@ -53,21 +72,8 @@ function createPokemonResource(pokemonName: string) {
 }
 
 function SuspenseImage() {
-  const [isPending, startTransition] = useTransition();
   const [pokemonName, setPokemonName] = useState<string>("");
-  const [pokemonResource, setPokemonResource] =
-    useState<Resource<string> | null>(null);
-
-  useEffect(() => {
-    if (!pokemonName) {
-      setPokemonResource(null);
-      return;
-    }
-
-    startTransition(() => {
-      setPokemonResource(getPokemonResource(pokemonName));
-    });
-  }, [pokemonName, startTransition]);
+  const [pokemonResource, isPending] = usePokemonResource(pokemonName);
 
   function handleSubmit(newPokemonName: string) {
     setPokemonName(newPokemonName);
