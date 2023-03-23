@@ -15,7 +15,7 @@ const PokemonInfo = React.lazy(
   () => import("./lazy/pokemon-info-render-as-you-fetch")
 );
 
-function usePokemonResource(pokemonName: string) {
+function usePokemonResource(pokemonName: string): any {
   const [isPending, startTransition] = useTransition();
   const [pokemonResource, setPokemonResource] =
     useState<Resource<string> | null>(null);
