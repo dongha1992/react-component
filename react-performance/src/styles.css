@@ -1,3 +1,6 @@
+.city-app {
+  margin: 60px;
+}
 .city-app ul {
   height: 300px;
   width: 300px;
@@ -6,6 +9,7 @@
   padding: 0;
   list-style: none;
   position: relative;
+  padding: 20px;
 }
 
 .city-app ul li {

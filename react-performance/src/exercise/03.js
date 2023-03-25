@@ -21,8 +21,8 @@ function Menu({
           getItemProps={getItemProps}
           item={item}
           index={index}
-          selectedItem={selectedItem}
-          highlightedIndex={highlightedIndex}
+          isSelected={selectedItem?.id === item.id}
+          isHighlighted={highlightedIndex === index}
         >
           {item.name}
         </ListItem>
@@ -32,16 +32,16 @@ function Menu({
 }
 // 🐨 Memoize the Menu here using React.memo
 
+Menu = React.memo(Menu)
+
 function ListItem({
   getItemProps,
   item,
   index,
-  selectedItem,
-  highlightedIndex,
+  isSelected,
+  isHighlighted,
   ...props
 }) {
-  const isSelected = selectedItem?.id === item.id
-  const isHighlighted = highlightedIndex === index
   return (
     <li
       {...getItemProps({
@@ -56,16 +56,29 @@ function ListItem({
     />
   )
 }
-// 🐨 Memoize the ListItem here using React.memo
+
+ListItem = React.memo(ListItem, (prev, next) => {
+  if (prev.getItemProps != next.getItemProps) return false
+  if (prev.item != next.item) return false
+  if (prev.index != next.index) return false
+  if (prev.isSelected != next.isSelected) return false
+  if (prev.isHighlighted !== next.isHighlighted) return false
+  return true
+})
+
+// ListItem = React.memo(ListItem)
 
 function App() {
   const forceRerender = useForceRerender()
   const [inputValue, setInputValue] = React.useState('')
 
   const {data: allItems, run} = useAsync({data: [], status: 'pending'})
+
   React.useEffect(() => {
     run(getItems(inputValue))
   }, [inputValue, run])
+
+  // const items = React.useMemo(() => allItems.slice(0, 100), [allItems])
   const items = allItems.slice(0, 100)
 
   const {

@@ -18,6 +18,7 @@ function useSafeDispatch(dispatch) {
 // React.useEffect(() => {
 //   run(fetchPokemon(pokemonName))
 // }, [pokemonName, run])
+
 const defaultInitialState = {status: 'idle', data: null, error: null}
 function useAsync(initialState) {
   const initialStateRef = React.useRef({
