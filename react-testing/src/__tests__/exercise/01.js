@@ -71,22 +71,58 @@ test("about button dispatch event", () => {
 /* eslint no-unused-vars:0 */
 
 test("about react testing lib", () => {
-  const div = document.createElement("div");
-  document.body.append(div);
+  // 아래와 같이 사용 가능
+  const { container } = render(<Counter />);
 
-  const root = createRoot(div);
-  act(() => root.render(<Counter />));
+  const [decrement, increment] = container.querySelectorAll("button");
+  const message = container.firstChild.querySelector("div");
 
-  const [decrement, increment] = div.querySelectorAll("button");
-  const message = div.firstChild.querySelector("div");
-
-  expect(message.textContent).toBe("Current count: 0");
+  expect(message).toHaveTextContent("Current count: 0");
 
   fireEvent.click(increment);
-  expect(message.textContent).toBe("Current count: 1");
+  expect(message).toHaveTextContent("Current count: 1");
 
   fireEvent.click(decrement);
-  expect(message.textContent).toBe("Current count: 0");
+  expect(message).toHaveTextContent("Current count: 0");
+});
+
+/* eslint no-unused-vars:0 */
+
+test("about avoiding implementaion detail", () => {
+  // screen 안 쓰면 아래와 같이 사용 가능
+  // const { container } = render(<Counter />);
+
+  render(<Counter />);
+  const increment = screen.getByRole("button", { name: /increment/i });
+  const decrement = screen.getByRole("button", { name: /decrement/i });
+  const message = screen.getByText(/current count/i);
+
+  expect(message).toHaveTextContent("Current count: 0");
+
+  fireEvent.click(increment);
+  expect(message).toHaveTextContent("Current count: 1");
+
+  fireEvent.click(decrement);
+  expect(message).toHaveTextContent("Current count: 0");
+});
+
+/* eslint no-unused-vars:0 */
+
+test("about browser interaction", () => {
+  render(<Counter />);
+  const increment = screen.getByRole("button", { name: /increment/i });
+  const decrement = screen.getByRole("button", { name: /decrement/i });
+  const message = screen.getByText(/current count/i);
+
+  expect(message).toHaveTextContent("Current count: 0");
+
+  // button onMouseDown으로 변경되면 아래 테스트는 에러남
+  // useEvent 사용
+  fireEvent.click(increment);
+  expect(message).toHaveTextContent("Current count: 1");
+
+  fireEvent.click(decrement);
+  expect(message).toHaveTextContent("Current count: 0");
 });
 
 /* eslint no-unused-vars:0 */
