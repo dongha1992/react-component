@@ -54,15 +54,18 @@ function useAsync(initialState) {
     [safeSetState],
   )
 
-  const setData = React.useCallback(data => safeSetState({data}), [
-    safeSetState,
-  ])
-  const setError = React.useCallback(error => safeSetState({error}), [
-    safeSetState,
-  ])
-  const reset = React.useCallback(() => safeSetState(initialStateRef.current), [
-    safeSetState,
-  ])
+  const setData = React.useCallback(
+    data => safeSetState({data}),
+    [safeSetState],
+  )
+  const setError = React.useCallback(
+    error => safeSetState({error}),
+    [safeSetState],
+  )
+  const reset = React.useCallback(
+    () => safeSetState(initialStateRef.current),
+    [safeSetState],
+  )
 
   return {
     // using the same names that react-query uses for convenience
@@ -115,7 +118,7 @@ function AppGrid({
 }) {
   const [keepUpdated, setKeepUpdated] = React.useState(false)
   return (
-    <div>
+    <div className="container">
       <form onSubmit={e => e.preventDefault()}>
         <div>
           <button type="button" onClick={onUpdateGrid}>
@@ -165,7 +168,7 @@ function AppGrid({
           overflow: 'scroll',
         }}
       >
-        <div style={{width: columns * 40}}>
+        <div style={{width: columns * 40}} className="grid">
           {Array.from({length: rows}).map((r, row) => (
             <div key={row} style={{display: 'flex'}}>
               {Array.from({length: columns}).map((c, column) => (

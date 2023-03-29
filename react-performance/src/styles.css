@@ -16,6 +16,25 @@
   height: 20px;
 }
 
+.grid-app {
+  padding: 100px;
+}
+.grid-app > button {
+  margin-bottom: 20px;
+}
+
+.grid-app .container {
+  margin-top: 20px;
+}
+
+.grid-app .container form > div {
+  margin-bottom: 10px;
+}
+
+.grid-app .container .grid {
+  margin-top: 20px;
+}
+
 .grid-app .cell {
   cursor: pointer;
   display: flex;

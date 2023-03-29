@@ -7,6 +7,7 @@ const allItems = cities.map((city, index) => ({
 }))
 
 export function getItems(filter) {
+  console.log('')
   if (!filter) {
     return allItems
   }
